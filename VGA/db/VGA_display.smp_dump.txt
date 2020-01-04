@@ -1,0 +1,7 @@
+
+State Machine - |VGA_display|control:c0|current_state
+Name current_state.s_plot_graph current_state.s_plot_letter current_state.s_clear current_state.s_pre_plot 
+current_state.s_pre_plot 0 0 0 0 
+current_state.s_clear 0 0 1 1 
+current_state.s_plot_letter 0 1 0 1 
+current_state.s_plot_graph 1 0 0 1 

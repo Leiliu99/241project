@@ -1,0 +1,335 @@
+//module FinalProject(SW, KEY, LEDR);
+	//input [3:0] KEY;
+	//input [9:0] SW;
+	////input CLOCK_50;
+	//output [9:0]LEDR;
+	//compareWithNote comp(.clock(~KEY[0]), .weightedData({SW[9:0], 587'd0}), .finalResult(LEDR[3:0]));
+	//wire [45:0]outputofmaxmin;
+	//wire [45:0] deltaoutput;
+	//findMaxMinIn20 f1(.clock(CLOCK_50), .sampleOf20({874'd0, 46'd1}), .delta(LEDR[3:0]));
+	//findNote fn(46'd0,46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd0, 46'd128, LEDR[3:0]);
+//endmodule
+
+
+//module for store_x and store_y
+
+//for getting delta for the set of 100 max and mins
+
+//enable is filtered_y
+module compareWithNote(clock, weightedData, finalResult, outputDelta);
+    input clock;
+    //2000 element array of y, each number is 11 bit wide
+    input [597:0]weightedData;
+	 //assign weightedData = {552'd0, 46'd128};
+    output outputDelta;
+    reg enable;
+    reg [919:0] A4arr, As4arr, B4arr, C5arr, Cs5arr, D5arr, Ds5arr, E5arr, F5arr, Fs5arr, G5arr, Gs5arr, A5arr;
+
+    //wire [10:0] delta;
+    //wire [45:0]A4, As4, B4, C5, Cs5, D5, Ds5, E5, F5, Fs5, G5, Gs5, A5;
+    reg [11959:0] allData;
+    assign outputDelta = deltaA4;
+    wire [45:0]deltaA4, deltaAs4, deltaB4, deltaC5, deltaCs5, deltaD5, deltaDs5, deltaE5, deltaF5, deltaFs5, deltaG5, deltaGs5, deltaA5;
+    
+    output [3:0]finalResult;
+	 
+	 reg isUpdateArr;
+	 
+    
+    always @ (posedge clock)
+        begin
+            if(allData[597:0] != weightedData[597:0]) begin
+               allData[11959:598] <= allData[11361:0];
+               allData[597:0] <= weightedData[597:0];  
+					if(!isUpdateArr) begin
+						isUpdateArr <= 1;
+					end
+				end
+				else 
+					if(isUpdateArr) begin
+						A4arr <= {allData[(19*598)+45:598*19], allData[(18*598)+45:598*18], allData[(17*598)+45:598*17], allData[(16*598)+45:598*16], 
+						allData[(15*598)+45:598*15], allData[(14*598)+45:598*14], allData[(13*598)+45:598*13], allData[(12*598)+45:598*12], allData[(11*598)+45:598*11], 
+						allData[(10*598)+45:598*10], allData[(9*598)+45:598*9], allData[(8*598)+45:598*8], allData[(7*598)+45:598*7], allData[(6*598)+45:598*6], 
+						allData[(5*598)+45:598*5], allData[(4*598)+45:598*4], allData[(3*598)+45:598*3], allData[(2*598)+45:598*2], allData[(1*598)+45:598*1], allData[(0*598)+45:598*0]};
+
+
+					// assign As4arr = {allData[11453:11408], allData[10855:10810], allData[10257:10212], allData[9659:9614], allData[9061:9016], allData[8463:8418], 
+					// allData[7865:7820], allData[7267:7222], allData[6669:6624], allData[6071:6026], allData[5473:5428], allData[4875:4830], allData[4277:4232], 
+					// allData[3679:3634], allData[3081:3036], allData[2483:2438], allData[1885:1840], allData[1287:1242], allData[689:644], allData[91:46]};
+
+						As4arr <= {allData[(19*598)+(2*46)-1:46+(598*19)], allData[(18*598)+(2*46)-1:46+(598*18)], allData[(17*598)+(2*46)-1:46+(598*17)], allData[(16*598)+(2*46)-1:46+(598*16)], 
+						allData[(15*598)+(2*46)-1:46+(598*15)], allData[(14*598)+(2*46)-1:46+(598*14)], allData[(13*598)+(2*46)-1:46+(598*13)], allData[(12*598)+(2*46)-1:46+(598*12)], allData[(11*598)+(2*46)-1:46+(598*11)], 
+						allData[(10*598)+(2*46)-1:46+(598*10)], allData[(9*598)+(2*46)-1:46+(598*9)], allData[(8*598)+(2*46)-1:46+(598*8)], allData[(7*598)+(2*46)-1:46+(598*7)], allData[(6*598)+(2*46)-1:46+(598*6)], 
+						allData[(5*598)+(2*46)-1:46+(598*5)], allData[(4*598)+(2*46)-1:46+(598*4)], allData[(3*598)+(2*46)-1:46+(598*3)], allData[(2*598)+(2*46)-1:46+(598*2)], allData[(1*598)+(2*46)-1:46+(598*1)], allData[(0*598)+(2*46)-1:46+(598*0)]};
+
+
+					// assign B4arr = {allData[11499:11454], allData[10901:10856], allData[10303:10258], allData[9705:9660], allData[9107:9062], allData[8509:8464], 
+					// allData[7911:7866], allData[7313:7268], allData[6715:6670], allData[6117:6072], allData[5519:5474], allData[4921:4876], allData[4323:4278], 
+					// allData[3725:3680], allData[3127:3082], allData[2529:2484], allData[1931:1886], allData[1333:1288], allData[735:690], allData[137:92]};
+						//3*24+598,2*46+598+598      3*46+598-1,2*46+598     3*46-1,2*46
+
+						B4arr <= {allData[(19*598)+(3*46)-1:(2*46)+(598*19)], allData[(18*598)+(3*46)-1:(2*46)+(598*18)], allData[(17*598)+(3*46)-1:(2*46)+(598*17)], allData[(16*598)+(3*46)-1:(2*46)+(598*16)], 
+						allData[(15*598)+(3*46)-1:(2*46)+(598*15)], allData[(14*598)+(3*46)-1:(2*46)+(598*14)], allData[(13*598)+(3*46)-1:(2*46)+(598*13)], allData[(12*598)+(3*46)-1:(2*46)+(598*12)], allData[(11*598)+(3*46)-1:(2*46)+(598*11)], 
+						allData[(10*598)+(3*46)-1:(2*46)+(598*10)], allData[(9*598)+(3*46)-1:(2*46)+(598*9)], allData[(8*598)+(3*46)-1:(2*46)+(598*8)], allData[(7*598)+(3*46)-1:(2*46)+(598*7)], allData[(6*598)+(3*46)-1:(2*46)+(598*6)], 
+						allData[(5*598)+(3*46)-1:(2*46)+(598*5)], allData[(4*598)+(3*46)-1:(2*46)+(598*4)], allData[(3*598)+(3*46)-1:(2*46)+(598*3)], allData[(2*598)+(3*46)-1:(2*46)+(598*2)], allData[(1*598)+(3*46)-1:(2*46)+(598*1)], allData[(0*598)+(3*46)-1:(2*46)+(598*0)]};
+
+
+						C5arr <= {allData[(19*598)+(4*46)-1:(3*46)+(598*19)], allData[(18*598)+(4*46)-1:(3*46)+(598*18)], allData[(17*598)+(4*46)-1:(3*46)+(598*17)], allData[(16*598)+(4*46)-1:(3*46)+(598*16)], 
+						allData[(15*598)+(4*46)-1:(3*46)+(598*15)], allData[(14*598)+(4*46)-1:(3*46)+(598*14)], allData[(13*598)+(4*46)-1:(3*46)+(598*13)], allData[(12*598)+(4*46)-1:(3*46)+(598*12)], allData[(11*598)+(4*46)-1:(3*46)+(598*11)], 
+						allData[(10*598)+(4*46)-1:(3*46)+(598*10)], allData[(9*598)+(4*46)-1:(3*46)+(598*9)], allData[(8*598)+(4*46)-1:(3*46)+(598*8)], allData[(7*598)+(4*46)-1:(3*46)+(598*7)], allData[(6*598)+(4*46)-1:(3*46)+(598*6)], 
+						allData[(5*598)+(4*46)-1:(3*46)+(598*5)], allData[(4*598)+(4*46)-1:(3*46)+(598*4)], allData[(3*598)+(4*46)-1:(3*46)+(598*3)], allData[(2*598)+(4*46)-1:(3*46)+(598*2)], allData[(1*598)+(4*46)-1:(3*46)+(598*1)], 
+						allData[(0*598)+(4*46)-1:(3*46)+(598*0)]};
+
+						Cs5arr <= {allData[(19*598)+(5*46)-1:(4*46)+(598*19)], allData[(18*598)+(5*46)-1:(4*46)+(598*18)], allData[(17*598)+(5*46)-1:(4*46)+(598*17)], allData[(16*598)+(5*46)-1:(4*46)+(598*16)], 
+						allData[(15*598)+(5*46)-1:(4*46)+(598*15)], allData[(14*598)+(5*46)-1:(4*46)+(598*14)], allData[(13*598)+(5*46)-1:(4*46)+(598*13)], allData[(12*598)+(5*46)-1:(4*46)+(598*12)], allData[(11*598)+(5*46)-1:(4*46)+(598*11)], 
+						allData[(10*598)+(5*46)-1:(4*46)+(598*10)], allData[(9*598)+(5*46)-1:(4*46)+(598*9)], allData[(8*598)+(5*46)-1:(4*46)+(598*8)], allData[(7*598)+(5*46)-1:(4*46)+(598*7)], allData[(6*598)+(5*46)-1:(4*46)+(598*6)], 
+						allData[(5*598)+(5*46)-1:(4*46)+(598*5)], allData[(4*598)+(5*46)-1:(4*46)+(598*4)], allData[(3*598)+(5*46)-1:(4*46)+(598*3)], allData[(2*598)+(5*46)-1:(4*46)+(598*2)], allData[(1*598)+(5*46)-1:(4*46)+(598*1)], 
+						allData[(0*598)+(5*46)-1:(4*46)+(598*0)]};
+
+						D5arr <= {allData[(19*598)+(6*46)-1:(5*46)+(598*19)], allData[(18*598)+(6*46)-1:(5*46)+(598*18)], allData[(17*598)+(6*46)-1:(5*46)+(598*17)], allData[(16*598)+(6*46)-1:(5*46)+(598*16)], 
+						allData[(15*598)+(6*46)-1:(5*46)+(598*15)], allData[(14*598)+(6*46)-1:(5*46)+(598*14)], allData[(13*598)+(6*46)-1:(5*46)+(598*13)], allData[(12*598)+(6*46)-1:(5*46)+(598*12)], allData[(11*598)+(6*46)-1:(5*46)+(598*11)], 
+						allData[(10*598)+(6*46)-1:(5*46)+(598*10)], allData[(9*598)+(6*46)-1:(5*46)+(598*9)], allData[(8*598)+(6*46)-1:(5*46)+(598*8)], allData[(7*598)+(6*46)-1:(5*46)+(598*7)], allData[(6*598)+(6*46)-1:(5*46)+(598*6)], 
+						allData[(5*598)+(6*46)-1:(5*46)+(598*5)], allData[(4*598)+(6*46)-1:(5*46)+(598*4)], allData[(3*598)+(6*46)-1:(5*46)+(598*3)], allData[(2*598)+(6*46)-1:(5*46)+(598*2)], allData[(1*598)+(6*46)-1:(5*46)+(598*1)], 
+						allData[(0*598)+(6*46)-1:(5*46)+(598*0)]};
+
+						Ds5arr <= {allData[(19*598)+(7*46)-1:(6*46)+(598*19)], allData[(18*598)+(7*46)-1:(6*46)+(598*18)], allData[(17*598)+(7*46)-1:(6*46)+(598*17)], allData[(16*598)+(7*46)-1:(6*46)+(598*16)], 
+						allData[(15*598)+(7*46)-1:(6*46)+(598*15)], allData[(14*598)+(7*46)-1:(6*46)+(598*14)], allData[(13*598)+(7*46)-1:(6*46)+(598*13)], allData[(12*598)+(7*46)-1:(6*46)+(598*12)], allData[(11*598)+(7*46)-1:(6*46)+(598*11)], 
+						allData[(10*598)+(7*46)-1:(6*46)+(598*10)], allData[(9*598)+(7*46)-1:(6*46)+(598*9)], allData[(8*598)+(7*46)-1:(6*46)+(598*8)], allData[(7*598)+(7*46)-1:(6*46)+(598*7)], allData[(6*598)+(7*46)-1:(6*46)+(598*6)], 
+						allData[(5*598)+(7*46)-1:(6*46)+(598*5)], allData[(4*598)+(7*46)-1:(6*46)+(598*4)], allData[(3*598)+(7*46)-1:(6*46)+(598*3)], allData[(2*598)+(7*46)-1:(6*46)+(598*2)], allData[(1*598)+(7*46)-1:(6*46)+(598*1)], 
+						allData[(0*598)+(7*46)-1:(6*46)+(598*0)]};
+
+						E5arr <= {allData[(19*598)+(8*46)-1:(7*46)+(598*19)], allData[(18*598)+(8*46)-1:(7*46)+(598*18)], allData[(17*598)+(8*46)-1:(7*46)+(598*17)], allData[(16*598)+(8*46)-1:(7*46)+(598*16)], 
+						allData[(15*598)+(8*46)-1:(7*46)+(598*15)], allData[(14*598)+(8*46)-1:(7*46)+(598*14)], allData[(13*598)+(8*46)-1:(7*46)+(598*13)], allData[(12*598)+(8*46)-1:(7*46)+(598*12)], allData[(11*598)+(8*46)-1:(7*46)+(598*11)], 
+						allData[(10*598)+(8*46)-1:(7*46)+(598*10)], allData[(9*598)+(8*46)-1:(7*46)+(598*9)], allData[(8*598)+(8*46)-1:(7*46)+(598*8)], allData[(7*598)+(8*46)-1:(7*46)+(598*7)], allData[(6*598)+(8*46)-1:(7*46)+(598*6)], 
+						allData[(5*598)+(8*46)-1:(7*46)+(598*5)], allData[(4*598)+(8*46)-1:(7*46)+(598*4)], allData[(3*598)+(8*46)-1:(7*46)+(598*3)], allData[(2*598)+(8*46)-1:(7*46)+(598*2)], allData[(1*598)+(8*46)-1:(7*46)+(598*1)], 
+						allData[(0*598)+(8*46)-1:(7*46)+(598*0)]};
+
+						F5arr <= {allData[(19*598)+(9*46)-1:(8*46)+(598*19)], allData[(18*598)+(9*46)-1:(8*46)+(598*18)], allData[(17*598)+(9*46)-1:(8*46)+(598*17)], allData[(16*598)+(9*46)-1:(8*46)+(598*16)], 
+						allData[(15*598)+(9*46)-1:(8*46)+(598*15)], allData[(14*598)+(9*46)-1:(8*46)+(598*14)], allData[(13*598)+(9*46)-1:(8*46)+(598*13)], allData[(12*598)+(9*46)-1:(8*46)+(598*12)], allData[(11*598)+(9*46)-1:(8*46)+(598*11)], 
+						allData[(10*598)+(9*46)-1:(8*46)+(598*10)], allData[(9*598)+(9*46)-1:(8*46)+(598*9)], allData[(8*598)+(9*46)-1:(8*46)+(598*8)], allData[(7*598)+(9*46)-1:(8*46)+(598*7)], allData[(6*598)+(9*46)-1:(8*46)+(598*6)], 
+						allData[(5*598)+(9*46)-1:(8*46)+(598*5)], allData[(4*598)+(9*46)-1:(8*46)+(598*4)], allData[(3*598)+(9*46)-1:(8*46)+(598*3)], allData[(2*598)+(9*46)-1:(8*46)+(598*2)], allData[(1*598)+(9*46)-1:(8*46)+(598*1)], 
+						allData[(0*598)+(9*46)-1:(8*46)+(598*0)]};
+
+						Fs5arr <= {allData[(19*598)+(10*46)-1:(9*46)+(598*19)], allData[(18*598)+(10*46)-1:(9*46)+(598*18)], allData[(17*598)+(10*46)-1:(9*46)+(598*17)], allData[(16*598)+(10*46)-1:(9*46)+(598*16)], 
+						allData[(15*598)+(10*46)-1:(9*46)+(598*15)], allData[(14*598)+(10*46)-1:(9*46)+(598*14)], allData[(13*598)+(10*46)-1:(9*46)+(598*13)], allData[(12*598)+(10*46)-1:(9*46)+(598*12)], allData[(11*598)+(10*46)-1:(9*46)+(598*11)], 
+						allData[(10*598)+(10*46)-1:(9*46)+(598*10)], allData[(9*598)+(10*46)-1:(9*46)+(598*9)], allData[(8*598)+(10*46)-1:(9*46)+(598*8)], allData[(7*598)+(10*46)-1:(9*46)+(598*7)], allData[(6*598)+(10*46)-1:(9*46)+(598*6)], 
+						allData[(5*598)+(10*46)-1:(9*46)+(598*5)], allData[(4*598)+(10*46)-1:(9*46)+(598*4)], allData[(3*598)+(10*46)-1:(9*46)+(598*3)], allData[(2*598)+(10*46)-1:(9*46)+(598*2)], allData[(1*598)+(10*46)-1:(9*46)+(598*1)], 
+						allData[(0*598)+(10*46)-1:(9*46)+(598*0)]};
+
+						G5arr <= {allData[(19*598)+(11*46)-1:(10*46)+(598*19)], allData[(18*598)+(11*46)-1:(10*46)+(598*18)], allData[(17*598)+(11*46)-1:(10*46)+(598*17)], allData[(16*598)+(11*46)-1:(10*46)+(598*16)], 
+						allData[(15*598)+(11*46)-1:(10*46)+(598*15)], allData[(14*598)+(11*46)-1:(10*46)+(598*14)], allData[(13*598)+(11*46)-1:(10*46)+(598*13)], allData[(12*598)+(11*46)-1:(10*46)+(598*12)], allData[(11*598)+(11*46)-1:(10*46)+(598*11)], 
+						allData[(11*598)+(11*46)-1:(10*46)+(598*10)], allData[(9*598)+(11*46)-1:(10*46)+(598*9)], allData[(8*598)+(11*46)-1:(10*46)+(598*8)], allData[(7*598)+(11*46)-1:(10*46)+(598*7)], allData[(6*598)+(11*46)-1:(10*46)+(598*6)], 
+						allData[(5*598)+(11*46)-1:(10*46)+(598*5)], allData[(4*598)+(11*46)-1:(10*46)+(598*4)], allData[(3*598)+(11*46)-1:(10*46)+(598*3)], allData[(2*598)+(11*46)-1:(10*46)+(598*2)], allData[(1*598)+(11*46)-1:(10*46)+(598*1)], 
+						allData[(0*598)+(11*46)-1:(10*46)+(598*0)]};
+
+						Gs5arr <= {allData[(19*598)+(12*46)-1:(11*46)+(598*19)], allData[(18*598)+(12*46)-1:(11*46)+(598*18)], allData[(17*598)+(12*46)-1:(11*46)+(598*17)], allData[(16*598)+(12*46)-1:(11*46)+(598*16)], 
+						allData[(15*598)+(12*46)-1:(11*46)+(598*15)], allData[(14*598)+(12*46)-1:(11*46)+(598*14)], allData[(13*598)+(12*46)-1:(11*46)+(598*13)], allData[(12*598)+(12*46)-1:(11*46)+(598*12)], allData[(11*598)+(12*46)-1:(11*46)+(598*11)], 
+						allData[(11*598)+(12*46)-1:(11*46)+(598*10)], allData[(9*598)+(12*46)-1:(11*46)+(598*9)], allData[(8*598)+(12*46)-1:(11*46)+(598*8)], allData[(7*598)+(12*46)-1:(11*46)+(598*7)], allData[(6*598)+(12*46)-1:(11*46)+(598*6)], 
+						allData[(5*598)+(12*46)-1:(11*46)+(598*5)], allData[(4*598)+(12*46)-1:(11*46)+(598*4)], allData[(3*598)+(12*46)-1:(11*46)+(598*3)], allData[(2*598)+(12*46)-1:(11*46)+(598*2)], allData[(1*598)+(12*46)-1:(11*46)+(598*1)], 
+						allData[(0*598)+(12*46)-1:(11*46)+(598*0)]};
+
+						A5arr <= {allData[(19*598)+(13*46)-1:(12*46)+(598*19)], allData[(18*598)+(13*46)-1:(12*46)+(598*18)], allData[(17*598)+(13*46)-1:(12*46)+(598*17)], allData[(16*598)+(13*46)-1:(12*46)+(598*16)], 
+						allData[(15*598)+(13*46)-1:(12*46)+(598*15)], allData[(14*598)+(13*46)-1:(12*46)+(598*14)], allData[(13*598)+(13*46)-1:(12*46)+(598*13)], allData[(12*598)+(13*46)-1:(12*46)+(598*12)], allData[(11*598)+(13*46)-1:(12*46)+(598*11)], 
+						allData[(11*598)+(13*46)-1:(12*46)+(598*10)], allData[(9*598)+(13*46)-1:(12*46)+(598*9)], allData[(8*598)+(13*46)-1:(12*46)+(598*8)], allData[(7*598)+(13*46)-1:(12*46)+(598*7)], allData[(6*598)+(13*46)-1:(12*46)+(598*6)], 
+						allData[(5*598)+(13*46)-1:(12*46)+(598*5)], allData[(4*598)+(13*46)-1:(12*46)+(598*4)], allData[(3*598)+(13*46)-1:(12*46)+(598*3)], allData[(2*598)+(13*46)-1:(12*46)+(598*2)], allData[(1*598)+(13*46)-1:(12*46)+(598*1)], 
+						allData[(0*598)+(13*46)-1:(12*46)+(598*0)]};
+						
+						isUpdateArr <= 0;
+						enable <= 1;
+					end
+					if(enable == 1) begin
+						enable <= 0;
+					end
+   end
+	
+	findMaxMinIn20 fA4(enable, clock, A4arr, deltaA4);
+	findMaxMinIn20 fAs4(enable, clock, As4arr, deltaAs4);
+	findMaxMinIn20 fB4(enable, clock, B4arr, deltaB4);
+	findMaxMinIn20 fC5(enable, clock, C5arr, deltaC5);
+	findMaxMinIn20 fCs5(enable, clock, Cs54arr, deltaCs5);
+	findMaxMinIn20 fD5(enable, clock, D5arr, deltaD5);
+	findMaxMinIn20 fDs5(enable, clock, Ds5arr, deltaDs5);
+	findMaxMinIn20 fE5(enable,clock, E5arr, deltaE5);
+	findMaxMinIn20 fF5(enable,clock, F5arr, deltaF5);
+	findMaxMinIn20 fFs5(enable,clock, Fs5arr, deltaFs5);
+	findMaxMinIn20 fG5(enable,clock, G5arr, deltaG5);
+	findMaxMinIn20 fGs5(enable,clock, Gs5arr, deltaGs5);
+	findMaxMinIn20 fA5(enable,clock, A5arr, deltaA5);
+
+	findNote fn(enable, deltaA4, deltaAs4, deltaB4, deltaC5, deltaCs5, deltaD5, deltaDs5, deltaE5, deltaF5, deltaFs5, deltaG5, deltaGs5, deltaA5, finalResult);
+endmodule
+
+
+//for getting max and min per 20 y's
+//y is the filtered value of the sample, count is for the module to count up to 100 y's and output
+//pass in 0 for both max and min for each time this module is called
+module findMaxMinIn20(enable, clock, sampleOf20, delta);
+	input clock, enable;
+	// each y is 11 bit wide and the arr has 20 elements
+	//46bits is one sample
+	//there are a total of 20 sets of 46 bits
+	input [919:0]sampleOf20;
+	//assign sampleOf20 = {874'd0, 46'd9};
+	reg signed [45:0]max;
+	reg signed [45:0]min;
+	wire signed [45:0]maxout, minout;
+	wire [45:0] w1;
+	//wire [45:0] temp;
+	reg [4:0] count;
+	output signed [45:0]delta;
+	assign w1 = (46*count) + 45;
+	reg isComparing;
+	reg isCalculating;
+
+	wire signed [45:0] test;
+	assign test = sampleOf20[(w1) -:46];
+	
+	
+//	always @ (*) begin
+//		if(max[45] == 1 && min[45] == 0)begin
+//			temp = max;
+//			max = min;
+//			min = temp;
+//		end
+//		if((max[45] == 0 && min[45] == 0)||(max[45] == 1 && min[45] == 1))begin
+//			if(max < min)begin
+//				temp = max;
+//				max = min;
+//				min = temp;
+//			end
+//		end
+//	end
+	
+	always @ (posedge clock) begin
+		//isComparing <= 1'b1;
+		if(!isCalculating && enable) begin
+			isCalculating <= 1;
+		end
+		
+		if(count != 19 && isCalculating) begin
+			if(sampleOf20[w1]== 1)begin
+				if(max[45] == 1)begin
+					max <= ((sampleOf20[(w1) -:46] >= max) ? sampleOf20[(w1) -:46] : max); 		
+				end
+				if(max[45] == 0)begin
+					max <= max;
+				end
+				if(min[45] == 1)begin
+					min <= ((sampleOf20[(w1) -:46] < min) ? sampleOf20[(w1) -:46] : min ); 		
+				end
+				if(min[45] == 0)begin
+					min <= sampleOf20[(w1) -:46];
+				end
+			end
+			if(sampleOf20[w1]== 0)begin
+				if(max[45] == 1)begin
+					max <= sampleOf20[(w1) -:46]; 		
+				end
+				if(max[45] == 0)begin
+					max <= ((sampleOf20[(w1) -:46] >= max) ? sampleOf20[(w1) -:46]  : max); 
+				end
+				if(min[45] == 1)begin
+					min <= min; 		
+				end
+				if(min[45] == 0)begin
+					min <= ((sampleOf20[(w1) -:46] < min) ? sampleOf20[(w1) -:46] : min); 
+				end
+			end
+			count <= count + 1;
+		end
+		else if(count == 19) begin
+			count <= 0;
+			isCalculating <= 0;
+		end
+	end
+		
+
+	assign maxout = max;
+	assign minout = min;
+	assign delta = maxout - minout;
+endmodule 
+
+
+module findNote(enable, ptpA4, ptpAs4, ptpB4, ptpC5, ptpCs5, ptpD5, ptpDs5, ptpE5, ptpF5, ptpFs5, ptpG5, ptpGs5, ptpA5, result);
+	input[45:0] ptpA4, ptpAs4, ptpB4, ptpC5, ptpCs5, ptpD5, ptpDs5, ptpE5, ptpF5, ptpFs5, ptpG5, ptpGs5, ptpA5;
+	input enable;
+//	assign ptpA4 = 46'd343;
+//	assign ptpAs4 = 46'd129;
+//	assign ptpB4 = 46'd192;
+//	assign ptpC5 = 46'd93;
+//	assign ptpCs5 = 46'd110;
+//	assign ptpD5 = 46'd111;
+//	assign ptpDs5 = 46'd123;
+//	assign ptpE5 = 46'd143;
+//	assign ptpF5 = 46'd354;
+//	assign ptpFs5 = 46'd342;
+//	assign ptpG5 = 46'd132;
+//	assign ptpGs5 = 46'd128;
+//	assign ptpA5 = 46'd0119;
+
+	output reg [3:0]result;
+	//output letter;
+	reg [45:0]resultValue;
+	parameter A4 = 4'b0000;
+	parameter As4 = 4'b0001;
+	parameter B4 = 4'b0010;
+	parameter C5 = 4'b0011;
+	parameter Cs5 = 4'b0100;
+	parameter D5 = 4'b0101;
+	parameter Ds5 = 4'b0110;
+	parameter E5 = 4'b0111;
+	parameter F5 = 4'b1000;
+	parameter Fs5 = 4'b1001;
+	parameter G5 = 4'b1010;
+	parameter Gs5 = 4'b1011;
+	parameter A5 = 4'b1100;
+	reg [45:0]greaterOfA4As4;
+	reg [45:0]greaterOfB4C5;
+	reg [45:0]greaterOfCs5D5;
+	reg [45:0]greaterOfDs5E5;
+	reg [45:0]greaterOfF5Fs5;
+	reg [45:0]greaterOfG5Gs5;
+
+	reg [45:0]greaterofA4_to_C5;
+	reg [45:0]greaterofCs5_to_E5;
+	reg [45:0]greaterofF5_to_Gs5;
+	reg [45:0]greaterofA4_to_E5;
+	reg [45:0]greaterofF5_to_A5;
+
+	always @(*)begin
+		if(enable)begin
+
+	//assign result = (A4 >= As4) ? A4 : As4;
+		 greaterOfA4As4 = (ptpA4 >= ptpAs4) ? ptpA4 : ptpAs4;
+		 greaterOfB4C5 = (ptpB4 >= ptpC5) ? ptpB4: ptpC5;
+		 greaterOfCs5D5 = (ptpCs5 >= ptpD5) ? ptpCs5 : ptpD5;
+		 greaterOfDs5E5 = (ptpDs5 >= ptpE5) ? ptpDs5 : ptpE5;
+		 greaterOfF5Fs5 = (ptpF5 >= ptpFs5) ? ptpF5 : ptpFs5;
+		 greaterOfG5Gs5 = (ptpG5 >= ptpGs5) ? ptpG5: ptpGs5;
+
+		 greaterofA4_to_C5 = (greaterOfA4As4 >= greaterOfB4C5) ? greaterOfA4As4 : greaterOfB4C5;
+		 greaterofCs5_to_E5 = (greaterOfCs5D5 >= greaterOfDs5E5) ? greaterOfCs5D5 : greaterOfDs5E5;
+		 greaterofF5_to_Gs5 = (greaterOfF5Fs5 >= greaterOfG5Gs5) ? greaterOfF5Fs5 : greaterOfG5Gs5;
+
+		 greaterofA4_to_E5 = (greaterofA4_to_C5 >= greaterofCs5_to_E5) ? greaterofA4_to_C5: greaterofCs5_to_E5;
+		 greaterofF5_to_A5 = (greaterofF5_to_Gs5 >= ptpA5) ? greaterofF5_to_Gs5 : ptpA5;
+
+		 resultValue = (greaterofA4_to_E5 >= greaterofF5_to_A5) ? greaterofA4_to_E5 : greaterofF5_to_A5; 
+		 
+	 
+		if(resultValue == ptpA4)  result = A4;
+		if(resultValue == ptpAs4)  result = As4;
+		if(resultValue == ptpB4)  result = B4;
+		if(resultValue == ptpC5)  result = C5;
+		if(resultValue == ptpCs5)  result = Cs5;
+		if(resultValue == ptpD5)  result = D5;
+		if(resultValue == ptpDs5)  result = Ds5;
+		if(resultValue == ptpE5)  result = E5;
+		if(resultValue == ptpF5)  result = F5;
+		if(resultValue == ptpFs5)  result = Fs5;
+		if(resultValue == ptpG5)  result = G5;
+		if(resultValue == ptpGs5)  result = Gs5;
+		if(resultValue == ptpA5)  result = A5;
+		end
+	end
+endmodule

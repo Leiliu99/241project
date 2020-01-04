@@ -1,0 +1,21 @@
+
+vlib work
+
+vlog calculation.v
+
+vsim calculation
+
+log -r {/*}
+
+add wave {/*}
+
+force {clk} 0 0ns, 1 {5ns} -r 10ns
+
+force {resetn} 1
+run 20ns
+
+force {magnitude} {10#128}
+run 20ns
+
+force {magnitude} {10#256}
+run 20ns

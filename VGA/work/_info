@@ -1,0 +1,133 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dW:/ECE241/lab7/lab7Part2
+vcontrol
+Z1 !s110 1573181238
+!i10b 1
+!s100 X2oCRfcQI_CQ?3n6IcFDl3
+IRk=L3X=dXMFoIkeAUjC;I2
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 d//SRVD/Homes$$/huangba9/Documents/Lab7Part2n/Lab7Part2
+Z4 w1573180238
+Z5 8VGA_display.v
+Z6 FVGA_display.v
+L0 65
+Z7 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z8 !s108 1573181237.000000
+Z9 !s107 VGA_display.v|
+Z10 !s90 -reportprogress|300|VGA_display.v|
+!i113 1
+Z11 tCvgOpt 0
+vdatapath
+!s110 1573181237
+!i10b 1
+!s100 ;4c0hnC4RVeY^Y01XkzkO2
+I:T]U31ajLjL7LUOTAbBBE2
+R2
+R3
+R4
+R5
+R6
+L0 1
+R7
+r1
+!s85 0
+31
+R8
+R9
+R10
+!i113 1
+R11
+vFSM
+R1
+!i10b 1
+!s100 W?Fj2m3OEbfa]4b>MUCD?1
+Icl5hfRVFbS0kKl?VKOU4c2
+R2
+R3
+R4
+R5
+R6
+L0 230
+R7
+r1
+!s85 0
+31
+R8
+R9
+R10
+!i113 1
+R11
+n@f@s@m
+vpart2
+!s110 1573165024
+!i10b 1
+!s100 K25bhOeAL?71ZHTF38L?60
+InRUcjVBI3[]V>6UD?`PK]0
+R2
+dW:/ECE241/Lab7/Lab7Part2
+w1572908893
+R5
+R6
+L0 234
+R7
+r1
+!s85 0
+31
+!s108 1573165024.000000
+R9
+R10
+!i113 1
+R11
+vup_Counter
+!s110 1572814179
+!i10b 1
+!s100 h16A8^>`jDl5[ea93_?0`2
+IF16<XzcOIoI1E3`g>=Wfz2
+R2
+R0
+w1572814169
+R5
+R6
+L0 2
+R7
+r1
+!s85 0
+31
+!s108 1572814179.000000
+R9
+R10
+!i113 1
+R11
+nup_@counter
+vVGA_display
+R1
+!i10b 1
+!s100 ek:^HT[H5MabQQTcIe19Z3
+IMhC53mMKl<DnfNN0G[RVE2
+R2
+R3
+R4
+R5
+R6
+L0 158
+R7
+r1
+!s85 0
+31
+R8
+R9
+R10
+!i113 1
+R11
+n@v@g@a_display

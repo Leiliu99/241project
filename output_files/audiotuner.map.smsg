@@ -1,0 +1,2 @@
+Warning (10268): Verilog HDL information at calculation.v(268): always construct contains both blocking and non-blocking assignments File: //SRVB/Homes$/liulei9/Desktop/final/calculation/calculation.v Line: 268
+Warning (10268): Verilog HDL information at datapath.v(153): always construct contains both blocking and non-blocking assignments File: //SRVB/Homes$/liulei9/Desktop/final/datapath.v Line: 153

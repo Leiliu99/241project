@@ -1,0 +1,83 @@
+
+
+//store magnitude in the memory?
+//module storeMagnitude(resetn, clk, magnitude, success_store);
+//	input resetn, clk;
+//	input [31:0] magnitude;//store one magnitude per clk into the memory
+//	output success_store;
+//	reg [10:0] mag_address;
+//	wire writeEn = 1'b1;
+//	
+//	always @ (posedge clk)
+//		begin
+//			if(resetn)begin
+//				//clear all the memory here????
+//			end
+//			if(!resetn) begin
+//			//still need to add this into library here(???)
+//				ram324 u0(.address(mag_address), .clock(clk), .data(magnitude) ,.wren(writeEn) ,.q(???));
+//				mag_address = mag_address + 1;		
+//			end
+//		end
+//	if(address == 11'd2000)begin
+//		assign success_store = 1'b1;
+//	end
+//endmodule
+
+module calculation(resetn, clk, magnitude, Y_out);
+	input resetn, clk;
+	input [31:0] magnitude;//1 little y here
+	
+	output reg [597:0] Y_out;//13 nodes of Y all together
+	
+	wire [11:0] factor;// a constant cofactor here
+	wire [7:0] coeff;
+
+
+	reg is_calculating;
+	reg [7:0] address = 8'd0;
+	reg signed [45:0] sum = 46'b0;
+	reg signed [31:0] pre_magnitude;
+	reg [5567:0] register_magnitude;
+	reg [12:0] currentAdd;
+	// declare constant here for calculation
+	assign factor = 12'd4096;//factor for calculating small y
+	
+	//instanciate my out440 module to get coeff out here
+	out440 n1(
+	.address(address),
+	.clock(clk),
+	.data(0),//data is not related here
+	.wren(0),
+	.q(coeff));
+	
+	
+	always @ (posedge clk) begin
+		if(resetn) begin
+			address <= 0;
+			sum <= 0;
+		end
+		else begin
+			if(pre_magnitude != magnitude && ~is_calculating) begin
+				pre_magnitude <= magnitude;
+				is_calculating <= 1'b1; //set the flag to indicate the calculation can start now
+				address <= 0; //calculation should start from the first address when a new magnitude arrives
+				
+				register_magnitude[5567:32] <= register_magnitude[5535:0];
+				register_magnitude[31:0] <= magnitude; //shift register to store the magnitude
+			end
+			else if(is_calculating && address == 8'd173) begin
+					Y_out <= sum / factor; //adjust the y_out to be the correct by dividing the factor
+					address <= 0;
+					is_calculating <= 1'b0; //back to the first coefficient here
+			end
+			else if(is_calculating) begin
+				currentAdd = 5567 - address * 32;
+				address <= address + 1;
+				sum <= sum + register_magnitude[currentAdd -: 31] * coeff;//calculate the corresponding coefficients according to the address
+			end
+		end
+	end
+	
+endmodule
+
